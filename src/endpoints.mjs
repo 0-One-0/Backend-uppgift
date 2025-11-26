@@ -32,7 +32,7 @@ router.post("/suppliers", async  (req,res) =>{
     //för att skapa en ny leverantör
 });
 router.put("/suppliers/:id", async  (req,res) =>{
-    //för att uppdatera en befintlig leverantö
+    //för att uppdatera en befintlig leverantör
 });
 router.delete("/suppliers/:id", async  (req,res) =>{
     // för att ta bort en leverantör

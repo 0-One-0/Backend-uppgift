@@ -5,7 +5,7 @@ import { pool } from "/db.mjs";
 export async function addProduct(name,quantity,price,catergory,supplier_id) {
 
     const result = await pool.query(
-    "INSERT INTO products (name,quantity,price,catergory,supplier_id) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+    "INSERT INTO products (Name,quantity,price,catergory,supplier_id) VALUES ($1, $2, $3, $4, $5) RETURNING *",
     [name,quantity,price,catergory,supplier_id]
     );
 
@@ -62,7 +62,7 @@ export async function listProductById(product_id) {
 export async function updateProductById(product_id,name,quantity,catergory,supplier_id) {
 
      const result = await pool.query(
-    "UPDATE posts SET Name = $1, quantity = $2, price = $3, catergory = $4, supplier_id = $5 WHERE id = $6",
+    "UPDATE products SET Name = $1, quantity = $2, price = $3, catergory = $4, supplier_id = $5 WHERE id = $6",
     [name, quantity, price, catergory, supplier_id, product_id]
   );
 
@@ -73,7 +73,7 @@ export async function updateProductById(product_id,name,quantity,catergory,suppl
 export async function deleteProductById(product_id) {
 
      const result = await pool.query(
-    "DELETE FROM posts WHERE id = $1",
+    "DELETE FROM products WHERE id = $1",
     [product_id]
   );
 
@@ -91,6 +91,89 @@ export async function listSuppliers() {
 
     if (!result.rows) {
     throw new Error("Failed to get suppliers");
+  }
+
+    return result.rows;
+}
+
+export async function listSupplierById(supplier_id) {
+
+    const result = await pool.query(
+      `SELECT 
+      suppliers.id, 
+      suppliers.Name, 
+      suppliers.Contact,
+      suppliers.Phone,
+      suppliers.Email, 
+      suppliers.created_at, 
+      COUNT(products.id) AS products_quantity
+    FROM suppliers LEFT JOIN products ON products.supplier_id = suppliers.id WHERE suppliers.id = $1`,[ supplier_id]
+    
+    );
+
+    if (!result.rows) {
+    throw new Error("Failed to get supplier");
+  }
+
+    return result.rows;
+}
+
+export async function addSupplier(supplier_name,supplier_contact,supplier_phone,supplier_email) {
+
+    const result = await pool.query(
+    "INSERT INTO suppliers (Name,Contact,Phone,Email) VALUES ($1, $2, $3, $4) RETURNING *",
+    [supplier_name,supplier_contact,supplier_phone,supplier_email]
+    );
+
+    if (result.rowCount !== 1) {
+    throw new Error("Failed to insert supplier");
+    }
+
+    return result.rows[0];
+}
+
+export async function updateSupplierById(supplier_name,supplier_contact,supplier_phone,supplier_email,supplier_id) {
+
+     const result = await pool.query(
+    "UPDATE suppliers SET Name = $1, Contact = $2, Phone = $3, Email = $4 WHERE id = $5",
+    [supplier_name,supplier_contact,supplier_phone,supplier_email,supplier_id]
+  );
+
+   return result.rowCount > 0;
+
+}
+
+export async function deleteSupplierById(supplier_id) {
+
+     const result = await pool.query(
+    "DELETE FROM suppliers WHERE id = $1",
+    [product_id]
+  );
+
+   return result.rowCount > 0;
+
+}
+
+export async function listSupplierProductsById(supplier_id) {
+
+    const result = await pool.query(
+      `SELECT 
+      suppliers.id, 
+      suppliers.Name, 
+      suppliers.Contact,
+      suppliers.Phone,
+      suppliers.Email, 
+      suppliers.created_at, 
+      product.id,
+      product.quantity,
+      products.price,
+      products.catergory
+    FROM suppliers LEFT JOIN products ON products.supplier_id = suppliers.id WHERE suppliers.id = $1`,[ supplier_id]
+    
+    );
+
+    if (!result.rows) {
+    throw new Error("Failed to get suppliers products");
   }
 
     return result.rows;
