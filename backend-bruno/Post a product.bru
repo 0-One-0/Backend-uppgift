@@ -1,0 +1,26 @@
+meta {
+  name: Post a product
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:3000/api/products
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "name": "1",
+    "quantity": 300,
+    "price": "400.45",
+    "category": "2",
+    "supplier_id": 9
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

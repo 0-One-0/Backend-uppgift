@@ -1,4 +1,4 @@
-import { pool } from "/db.mjs";
+import { pool } from "./db.mjs";
 
 // Funtions for products
 
@@ -65,6 +65,7 @@ export async function updateProductById(
   product_id,
   name,
   quantity,
+  price,
   catergory,
   supplier_id
 ) {
@@ -106,7 +107,7 @@ export async function listSupplierById(supplier_id) {
       suppliers.Email, 
       suppliers.created_at, 
       COUNT(products.id) AS products_quantity
-    FROM suppliers LEFT JOIN products ON products.supplier_id = suppliers.id WHERE suppliers.id = $1`,
+    FROM suppliers LEFT JOIN products ON products.supplier_id = suppliers.id WHERE suppliers.id = $1 GROUP BY suppliers.id`,
     [supplier_id]
   );
 
@@ -187,3 +188,5 @@ export async function listSupplierProductsById(supplier_id) {
 
   return result.rows;
 }
+
+
