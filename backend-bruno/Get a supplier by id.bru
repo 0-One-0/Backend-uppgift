@@ -1,17 +1,17 @@
 meta {
-  name: Delete a product by id
+  name: Get a supplier by id
   type: http
-  seq: 6
+  seq: 8
 }
 
-delete {
+get {
   url: http://localhost:3000/api/products/:id
   body: none
   auth: inherit
 }
 
 params:path {
-  id: 11
+  id: marko
 }
 
 body:json {

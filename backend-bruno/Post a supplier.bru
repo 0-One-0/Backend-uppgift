@@ -1,17 +1,13 @@
 meta {
-  name: Delete a product by id
+  name: Post a supplier
   type: http
-  seq: 6
+  seq: 9
 }
 
-delete {
-  url: http://localhost:3000/api/products/:id
-  body: none
+post {
+  url: http://localhost:3000/api/products
+  body: json
   auth: inherit
-}
-
-params:path {
-  id: 11
 }
 
 body:json {
@@ -20,7 +16,7 @@ body:json {
     "quantity": 300,
     "price": "400.45",
     "category": "2",
-    "supplier_id": 9
+    "supplier_id": 8
   }
 }
 

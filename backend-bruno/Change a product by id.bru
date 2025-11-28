@@ -1,12 +1,12 @@
 meta {
-  name: Delete a product by id
+  name: Change a product by id
   type: http
-  seq: 6
+  seq: 5
 }
 
-delete {
+put {
   url: http://localhost:3000/api/products/:id
-  body: none
+  body: json
   auth: inherit
 }
 
@@ -16,11 +16,11 @@ params:path {
 
 body:json {
   {
-    "name": "1",
-    "quantity": 300,
-    "price": "400.45",
-    "category": "2",
-    "supplier_id": 9
+    "name": "yooo",
+    "quantity": 3,
+    "price": "4.45",
+    "category": "Fun",
+    "supplier_id": 1
   }
 }
 

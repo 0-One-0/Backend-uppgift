@@ -1,14 +1,15 @@
-INSERT INTO suppliers (name, contact, phone, email)
+ INSERT INTO suppliers (name, contact, phone, email, country)
     VALUES 
-        ('Nordic Tech AB', 'Erik Andersson', '+46-8-123-4567', 'erik@nordictech.se'),
-        ('Stockholm Office Supply', 'Anna Bergström', '+46-8-234-5678', 'anna@stockholmoffice.se'),
-        ('Swedish Electronics', 'Lars Nilsson', '+46-8-345-6789', 'lars@swedishelectronics.se'),
-        ('Scandinavia Furniture', 'Ingrid Svensson', '+46-8-456-7890', 'ingrid@scandinaviafurniture.se'),
-        ('Malmö Wholesale', 'Gustav Johansson', '+46-40-567-8901', 'gustav@malmowholesale.se'),
-        ('Göteborg Supplies', 'Maria Karlsson', '+46-31-678-9012', 'maria@goteborgsupplies.se'),
-        ('Tech Innovation Nordic', 'Johan Pettersson', '+46-8-789-0123', 'johan@techinnovation.se'),
-        ('Business Solutions Sweden', 'Sofia Lindgren', '+46-8-890-1234', 'sofia@businesssolutions.se');
-
+        ('Nordic Tech AB', 'Erik Andersson', '+46-8-123-4567', 'erik@nordictech.se', 'Sweden'),
+        ('Stockholm Office Supply', 'Anna Bergström', '+46-8-234-5678', 'anna@stockholmoffice.se', 'Sweden'),
+        ('Swedish Electronics', 'Lars Nilsson', '+46-8-345-6789', 'lars@swedishelectronics.se', 'Sweden'),
+        ('Scandinavia Furniture', 'Ingrid Svensson', '+46-31-456-7890', 'ingrid@scandinaviafurniture.se', 'Sweden'),
+        ('Malmö Wholesale', 'Gustav Johansson', '+46-40-567-8901', 'gustav@malmowholesale.se', 'Sweden'),
+        ('Göteborg Supplies', 'Maria Karlsson', '+46-31-678-9012', 'maria@goteborgsupplies.se', 'Sweden'),
+        ('Tech Innovation Nordic', 'Johan Pettersson', '+46-8-789-0123', 'johan@techinnovation.se', 'Sweden'),
+        ('Business Solutions Sweden', 'Sofia Lindgren', '+46-8-890-1234', 'sofia@businesssolutions.se', 'Sweden'),
+        ('Uppsala Trading AB', 'Anders Persson', '+46-18-901-2345', 'anders@uppsalatrading.se', 'Sweden'),
+        ('Linköping Electronics', 'Emma Gustavsson', '+46-13-012-3456', 'emma@linkopingelectronics.se', 'Sweden');
 
 
 INSERT INTO products (name, quantity, price, catergory, supplier_id)

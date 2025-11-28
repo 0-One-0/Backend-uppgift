@@ -104,7 +104,8 @@ export async function listSupplierById(supplier_id) {
       suppliers.Name, 
       suppliers.Contact,
       suppliers.Phone,
-      suppliers.Email, 
+      suppliers.Email,
+      suppliers.Country, 
       suppliers.created_at, 
       COUNT(products.id) AS products_quantity
     FROM suppliers LEFT JOIN products ON products.supplier_id = suppliers.id WHERE suppliers.id = $1 GROUP BY suppliers.id`,
@@ -122,11 +123,18 @@ export async function addSupplier(
   supplier_name,
   supplier_contact,
   supplier_phone,
-  supplier_email
+  supplier_email,
+  supplier_country
 ) {
   const result = await pool.query(
-    "INSERT INTO suppliers (Name,Contact,Phone,Email) VALUES ($1, $2, $3, $4) RETURNING *",
-    [supplier_name, supplier_contact, supplier_phone, supplier_email]
+    "INSERT INTO suppliers (Name,Contact,Phone,Email,Country) VALUES ($1, $2, $3, $4,$5) RETURNING *",
+    [
+      supplier_name,
+      supplier_contact,
+      supplier_phone,
+      supplier_email,
+      supplier_country,
+    ]
   );
 
   if (result.rowCount !== 1) {
@@ -141,15 +149,17 @@ export async function updateSupplierById(
   supplier_contact,
   supplier_phone,
   supplier_email,
+  supplier_country,
   supplier_id
 ) {
   const result = await pool.query(
-    "UPDATE suppliers SET Name = $1, Contact = $2, Phone = $3, Email = $4 WHERE id = $5",
+    `UPDATE suppliers SET Name = $1, Contact = $2, Phone = $3, Email = $4, Country = $5 WHERE id = $6 `,
     [
       supplier_name,
       supplier_contact,
       supplier_phone,
       supplier_email,
+      supplier_country,
       supplier_id,
     ]
   );
@@ -158,8 +168,9 @@ export async function updateSupplierById(
 }
 
 export async function deleteSupplierById(supplier_id) {
+  
   const result = await pool.query("DELETE FROM suppliers WHERE id = $1", [
-    product_id,
+    supplier_id,
   ]);
 
   return result.rowCount > 0;
@@ -167,18 +178,14 @@ export async function deleteSupplierById(supplier_id) {
 
 export async function listSupplierProductsById(supplier_id) {
   const result = await pool.query(
-    `SELECT 
-      suppliers.id, 
-      suppliers.Name, 
-      suppliers.Contact,
-      suppliers.Phone,
-      suppliers.Email, 
-      suppliers.created_at, 
-      product.id,
-      product.quantity,
+    `SELECT  
+      products.id,
+      products.quantity,
       products.price,
-      products.catergory
-    FROM suppliers LEFT JOIN products ON products.supplier_id = suppliers.id WHERE suppliers.id = $1`,
+      products.catergory,
+      products.created_at, 
+      suppliers.Name AS suppliers_Name
+    FROM products LEFT JOIN suppliers ON products.supplier_id = suppliers.id WHERE products.supplier_id = $1`,
     [supplier_id]
   );
 
@@ -188,5 +195,3 @@ export async function listSupplierProductsById(supplier_id) {
 
   return result.rows;
 }
-
-

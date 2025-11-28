@@ -19,6 +19,7 @@ export async function startDatabase() {
     Contact TEXT NOT NULL ,
     Phone TEXT NOT NULL,
     Email TEXT NOT NULL,
+    Country TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`);
 
   await pool.query(`CREATE TABLE IF NOT EXISTS products (
