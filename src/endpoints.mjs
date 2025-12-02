@@ -50,8 +50,8 @@ router.post("/products", async (req, res) => {
     });
     return;
   }
-  const { name, quantity, price, category, supplier_id } = req.body;
 
+    const { name, quantity, price, category, supplier_id } = req.body;
   if (
     name === undefined ||
     quantity === undefined ||
@@ -61,7 +61,7 @@ router.post("/products", async (req, res) => {
   ) {
     res.status(400).json({
       error:
-        "A JSON body must includ name, quantity, price, catergory and supplier_id ",
+        "A JSON body must include name, quantity, price, category and supplier_id ",
     });
     return;
   }
@@ -92,11 +92,17 @@ router.post("/products", async (req, res) => {
     });
     return;
   }
-
-  const supplierResult = await listSupplierById(supplier_id);
+  let supplierResult;
+  try {
+    supplierResult = await listSupplierById(supplier_id);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "An unexpected error occurred." });
+    return;
+  }
 
   if (supplierResult.length === 0) {
-    res.status(400).json({
+    res.status(404).json({
       error: "supplier not found",
     });
     return;
@@ -116,11 +122,22 @@ router.post("/products", async (req, res) => {
     });
     return;
   }
-
-  const result = await addProduct(name, quantity, price, category, supplier_id);
-
+ let result;
+  try {
+    result = await addProduct(
+      name,
+      quantity,
+      price,
+      category,
+      supplier_id
+    );
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "An unexpected error occurred." });
+    return;
+  }
   if (!result) {
-    res.status(400).json({
+    res.status(500).json({
       error: "fail to add product",
     });
     return;
@@ -129,16 +146,23 @@ router.post("/products", async (req, res) => {
   res.status(200).json(result);
 });
 router.get("/products", async (req, res) => {
-  const result = await listProducts();
+  let result;
+  try {
+    const result = await listProducts();
 
-  if (result.length === 0) {
-    res.status(401).json({
-      error: "list is empty",
-    });
+    if (result.length === 0) {
+      res.status(404).json({
+        error: "list is empty",
+      });
+      return;
+    }
+
+    res.status(200).json(result);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "An unexpected error occurred." });
     return;
   }
-
-  res.status(200).json(result);
 });
 router.get("/products/:id", async (req, res) => {
   const product_id = Number.parseInt(req.params.id);
@@ -148,14 +172,19 @@ router.get("/products/:id", async (req, res) => {
     return;
   }
 
-  const result = await listProductById(product_id);
+  try {
+    const result = await listProductById(product_id);
+    if (result.length === 0) {
+      res.status(404).json({ error: "product not found" });
+      return;
+    }
 
-  if (result.length === 0) {
-    res.status(400).json({ error: "product not found" });
+    res.status(200).json(result);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "An unexpected error occurred." });
     return;
   }
-
-  res.status(200).json(result);
 });
 router.put("/products/:id", async (req, res) => {
   const product_id = Number.parseInt(req.params.id);
@@ -164,10 +193,16 @@ router.put("/products/:id", async (req, res) => {
     res.status(400).json({ error: "product id must be a number" });
     return;
   }
-
-  const findProduct = await listProductById(product_id);
+  let findProduct;
+  try {
+     findProduct = await listProductById(product_id);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "An unexpected error occurred." });
+    return;
+  }
   if (findProduct.length === 0) {
-    res.status(400).json({ error: "product not found" });
+    res.status(404).json({ error: "product not found" });
     return;
   }
 
@@ -188,7 +223,7 @@ router.put("/products/:id", async (req, res) => {
   ) {
     res.status(400).json({
       error:
-        "A JSON body must includ name, quantity, price, catergory and supplier_id ",
+        "A JSON body must include name, quantity, price, category and supplier_id ",
     });
     return;
   }
@@ -219,11 +254,16 @@ router.put("/products/:id", async (req, res) => {
     });
     return;
   }
-
-  const supplierResult = await listSupplierById(supplier_id);
-
+  let  supplierResult;
+  try {
+     supplierResult = await listSupplierById(supplier_id);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "An unexpected error occurred." });
+    return;
+  }
   if (supplierResult.length === 0) {
-    res.status(400).json({
+    res.status(404).json({
       error: "supplier not found",
     });
     return;
@@ -243,18 +283,24 @@ router.put("/products/:id", async (req, res) => {
     });
     return;
   }
-
-  const change = await updateProductById(
-    product_id,
-    name,
-    quantity,
-    price,
-    category,
-    supplier_id
-  );
+let change;
+  try {
+     change = await updateProductById(
+      product_id,
+      name,
+      quantity,
+      price,
+      category,
+      supplier_id
+    );
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "An unexpected error occurred." });
+    return;
+  }
 
   if (!change) {
-    res.status(400).json({
+    res.status(500).json({
       error: "unable to update product",
     });
     return;
@@ -269,17 +315,28 @@ router.delete("/products/:id", async (req, res) => {
     res.status(400).json({ error: "product id must be a number" });
     return;
   }
-
-  const findProduct = await listProductById(product_id);
-  if (findProduct.length === 0) {
-    res.status(400).json({ error: "product not found" });
+ let findProduct;
+  try {
+    findProduct = await listProductById(product_id);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "An unexpected error occurred." });
     return;
   }
-
-  const result = await deleteProductById(product_id);
-
+  if (findProduct.length === 0) {
+    res.status(404).json({ error: "product not found" });
+    return;
+  }
+  let result
+  try {
+     result = await deleteProductById(product_id);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "An unexpected error occurred." });
+    return;
+  }
   if (!result) {
-    res.status(400).json({ error: "product not deleted" });
+    res.status(500).json({ error: "product not deleted" });
     return;
   }
 
@@ -290,10 +347,17 @@ router.delete("/products/:id", async (req, res) => {
 
 router.get("/suppliers", async (req, res) => {
   //för att hämta alla leverantörer
-  const result = await listSuppliers();
+  let result;
+  try {
+    result = await listSuppliers();
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "An unexpected error occurred." });
+    return;
+  }
 
   if (result.length === 0) {
-    res.status(401).json({
+    res.status(404).json({
       error: "list is empty",
     });
     return;
@@ -309,10 +373,16 @@ router.get("/suppliers/:id", async (req, res) => {
     res.status(400).json({ error: "id must be a number" });
     return;
   }
-  const supplierResult = await listSupplierById(supplier_id);
-
+  let supplierResult;
+  try {
+    supplierResult = await listSupplierById(supplier_id);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "An unexpected error occurred." });
+    return;
+  }
   if (supplierResult.length === 0) {
-    res.status(400).json({
+    res.status(404).json({
       error: "supplier not found",
     });
     return;
@@ -338,7 +408,7 @@ router.post("/suppliers", async (req, res) => {
     country === undefined
   ) {
     res.status(400).json({
-      error: "A JSON body must includ name, contact, phone, email, country",
+      error: "A JSON body must include name, contact, phone, email, country",
     });
     return;
   }
@@ -362,8 +432,7 @@ router.post("/suppliers", async (req, res) => {
       error: "category invalid, must be a string",
     });
     return;
-  }
-   else if (!validString(country)) {
+  } else if (!validString(country)) {
     res.status(400).json({
       error: "country invalid, must be a string",
     });
@@ -372,7 +441,7 @@ router.post("/suppliers", async (req, res) => {
   const validPhone = phone.length;
 
   if (validPhone < 7) {
-    res.status(401).json({
+    res.status(400).json({
       error: "Invalid Phone must contain 7 or more chars",
     });
     return;
@@ -381,21 +450,26 @@ router.post("/suppliers", async (req, res) => {
   const testEmail = validEmail(email);
 
   if (testEmail === -1) {
-    res.status(401).json({
-      error: "Invalid end to emil must contain {.com or .se}",
+    res.status(400).json({
+      error: "Invalid end to email must contain {.com or .se}",
     });
     return;
   }
 
   if (testEmail === -2) {
-    res.status(401).json({
-      error: "Invalid emil must contain { @ }",
+    res.status(400).json({
+      error: "Invalid email must contain { @ }",
     });
     return;
   }
-
-  const result = await addSupplier(name, contact, phone, email, country);
-
+  let result;
+  try {
+    result = await addSupplier(name, contact, phone, email, country);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "An unexpected error occurred." });
+    return;
+  }
   res.status(200).json({
     message: "supplier has been added",
     result,
@@ -409,11 +483,16 @@ router.put("/suppliers/:id", async (req, res) => {
     res.status(400).json({ error: "id must be a number" });
     return;
   }
-
-  const supplierResult = await listSupplierById(supplier_id);
-
+  let supplierResult;
+  try {
+    supplierResult = await listSupplierById(supplier_id);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "An unexpected error occurred." });
+    return;
+  }
   if (supplierResult.length === 0) {
-    res.status(400).json({
+    res.status(404).json({
       error: "supplier not found",
     });
     return;
@@ -435,7 +514,7 @@ router.put("/suppliers/:id", async (req, res) => {
     country === undefined
   ) {
     res.status(400).json({
-      error: "A JSON body must includ name, contact, phone, email, country",
+      error: "A JSON body must include name, contact, phone, email, country",
     });
     return;
   }
@@ -460,8 +539,7 @@ router.put("/suppliers/:id", async (req, res) => {
       error: "category invalid, must be a string",
     });
     return;
-  }
-  else if (!validString(country)) {
+  } else if (!validString(country)) {
     res.status(400).json({
       error: "country invalid, must be a string",
     });
@@ -470,7 +548,7 @@ router.put("/suppliers/:id", async (req, res) => {
   const validPhone = phone.length;
 
   if (validPhone < 7) {
-    res.status(401).json({
+    res.status(400).json({
       error: "Invalid Phone must contain 7 or more chars",
     });
     return;
@@ -479,27 +557,33 @@ router.put("/suppliers/:id", async (req, res) => {
   const testEmail = validEmail(email);
 
   if (testEmail === -1) {
-    res.status(401).json({
-      error: "Invalid end to emil must contain {.com or .se}",
+    res.status(400).json({
+      error: "Invalid end to email must contain {.com or .se}",
     });
     return;
   }
 
   if (testEmail === -2) {
-    res.status(401).json({
-      error: "Invalid emil must contain { @ }",
+    res.status(400).json({
+      error: "Invalid email must contain { @ }",
     });
     return;
   }
-  const change = await updateSupplierById(
-    name,
-    contact,
-    phone,
-    email,
-    country,
-    supplier_id
-  );
-
+  let change;
+  try {
+    change = await updateSupplierById(
+      name,
+      contact,
+      phone,
+      email,
+      country,
+      supplier_id
+    );
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "An unexpected error occurred." });
+    return;
+  }
   if (!change) {
     res.status(400).json({
       error: "unable to update supplier",
@@ -510,7 +594,6 @@ router.put("/suppliers/:id", async (req, res) => {
   res.status(200).json();
 });
 router.delete("/suppliers/:id", async (req, res) => {
-  
   // för att ta bort en leverantör
   const supplier_id = Number.parseInt(req.params.id);
 
@@ -518,35 +601,51 @@ router.delete("/suppliers/:id", async (req, res) => {
     res.status(400).json({ error: "id must be a number" });
     return;
   }
-
-  const supplierResult = await listSupplierById(supplier_id);
-
+  let supplierResult;
+  try {
+    supplierResult = await listSupplierById(supplier_id);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "An unexpected error occurred." });
+    return;
+  }
   if (supplierResult.length === 0) {
-    res.status(400).json({
+    res.status(404).json({
       error: "supplier not found",
     });
     return;
   }
-
-  const productResult = await listSupplierProductsById(supplier_id);
+  let productResult;
+  try {
+    productResult = await listSupplierProductsById(supplier_id);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "An unexpected error occurred." });
+    return;
+  }
   if (productResult.length > 0) {
     res.status(400).json({
       error: "supplier has active products and can not be deleted",
     });
     return;
   }
-
-  const deleteSupplier = await deleteSupplierById(supplier_id);
-
+let deleteSupplier;
+  try {
+    deleteSupplier = await deleteSupplierById(supplier_id);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "An unexpected error occurred." });
+    return;
+  }
   if (deleteSupplier.length === 0) {
-    res.status(400).json({
+    res.status(404).json({
       error: "supplier not deleted",
     });
     return;
   }
 
   res.status(200).json({
-    message: "Deleted"
+    message: "Deleted",
   });
 });
 router.get("/suppliers/:id/products", async (req, res) => {
@@ -557,27 +656,36 @@ router.get("/suppliers/:id/products", async (req, res) => {
     res.status(400).json({ error: "id must be a number" });
     return;
   }
-
-  const supplierResult = await listSupplierById(supplier_id);
-
+  let supplierResult;
+  try {
+    supplierResult = await listSupplierById(supplier_id);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "An unexpected error occurred." });
+    return;
+  }
   if (supplierResult.length === 0) {
     res.status(400).json({
       error: "supplier not found",
     });
     return;
   }
-
-  const productResult = await listSupplierProductsById(supplier_id);
+  let productResult
+  try {
+    productResult = await listSupplierProductsById(supplier_id);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "An unexpected error occurred." });
+    return;
+  }
   if (productResult.length === 0) {
-    res.status(400).json({
+    res.status(404).json({
       error: "supplier has no products",
     });
     return;
   }
 
   res.status(200).json(productResult);
-
-
 });
 
 export default router;

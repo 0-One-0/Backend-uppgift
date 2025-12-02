@@ -11,23 +11,28 @@ export const pool = new Pool({
 });
 
 export async function startDatabase() {
-  await pool.connect();
+  try {
+    await pool.connect();
 
-  await pool.query(`CREATE TABLE IF NOT EXISTS suppliers (
+    await pool.query(`CREATE TABLE IF NOT EXISTS suppliers (
     id SERIAL PRIMARY KEY,
-    Name TEXT NOT NULL,
-    Contact TEXT NOT NULL ,
-    Phone TEXT NOT NULL,
-    Email TEXT NOT NULL,
-    Country TEXT NOT NULL,
+    name TEXT NOT NULL,
+    contact TEXT NOT NULL ,
+    phone TEXT NOT NULL,
+    email TEXT NOT NULL,
+    country TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)`);
 
-  await pool.query(`CREATE TABLE IF NOT EXISTS products (
+    await pool.query(`CREATE TABLE IF NOT EXISTS products (
     id SERIAL PRIMARY KEY,
-    Name TEXT NOT NULL,
+    name TEXT NOT NULL,
     quantity INT NOT NULL,
     price TEXT NOT NULL,
-    catergory TEXT NOT NULL,
+    category TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     supplier_id INT REFERENCES suppliers(id))`);
+  } catch (error) {
+    console.log(error);
+    return;
+  }
 }

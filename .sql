@@ -1,3 +1,23 @@
+ CREATE TABLE suppliers (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    contact TEXT NOT NULL ,
+    phone TEXT NOT NULL,
+    email TEXT NOT NULL,
+    country TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
+
+CREATE TABLE products (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    quantity INT NOT NULL,
+    price TEXT NOT NULL,
+    category TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    supplier_id INT REFERENCES suppliers(id)
+ 
+ 
+ 
  INSERT INTO suppliers (name, contact, phone, email, country)
     VALUES 
         ('Nordic Tech AB', 'Erik Andersson', '+46-8-123-4567', 'erik@nordictech.se', 'Sweden'),
@@ -12,7 +32,7 @@
         ('Linköping Electronics', 'Emma Gustavsson', '+46-13-012-3456', 'emma@linkopingelectronics.se', 'Sweden');
 
 
-INSERT INTO products (name, quantity, price, catergory, supplier_id)
+INSERT INTO products (name, quantity, price, category, supplier_id)
     VALUES 
         ('Laptop', 50, '999.99', 'Electronics', 1),
         ('Mouse', 150, '25.50', 'Electronics', 1),

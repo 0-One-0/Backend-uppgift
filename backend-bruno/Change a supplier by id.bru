@@ -5,23 +5,25 @@ meta {
 }
 
 put {
-  url: http://localhost:3000/api/products/:id
+  url: http://localhost:3000/api/suppliers/:id
   body: json
   auth: inherit
 }
 
 params:path {
-  id: 11
+  id: 14
 }
 
 body:json {
+  
   {
-    "name": "yooo",
-    "quantity": 3,
-    "price": "4.45",
-    "category": "Fun",
-    "supplier_id": 1
+    "name": "Changed ad",
+    "contact": "Change",
+    "phone": "+46 11111110",
+    "email": "Change@test.com",
+    "country": "ChangeLand"
   }
+  
 }
 
 settings {
