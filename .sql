@@ -1,3 +1,9 @@
+ 
+ DROP TABLE products;
+ DROP TABLE suppliers;
+
+ 
+ 
  CREATE TABLE suppliers (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
